@@ -9,6 +9,8 @@ float idep = 7;
 float idem = 8; 
 const double mp =  0.93827208816;    
 const double me =  0.000511;
+const double low_limjpsiM = 2.;
+const double high_limjpsiM = 5.;
 
 const int _maxNHits = 10000;
 const int _maxNTowers = 50 * 50;
@@ -63,6 +65,7 @@ float* _track_trueID             = new float[_maxNTracks];
 float* _track_px                 = new float[_maxNTracks];
 float* _track_py                 = new float[_maxNTracks];
 float* _track_pz                 = new float[_maxNTracks];
+short* _track_charge             = new short[_maxNTracks];
 unsigned short* _track_source             = new unsigned short[_maxNTracks];
 
 // vertex
@@ -81,6 +84,7 @@ float* _track_Proj_true_x             = new float[_maxNProjections];
 float* _track_Proj_true_y             = new float[_maxNProjections];
 float* _track_Proj_true_z             = new float[_maxNProjections];
 float* _track_Proj_true_t             = new float[_maxNProjections];
+float* _tracks_source                 = new float[_maxNProjections];
 
 // MC particles
 int _nMCPart;
@@ -222,7 +226,8 @@ void SetBranchAddressesTree(TTree* inputTree){
       inputTree->SetBranchAddress("tracks_pz",            _track_pz);
       inputTree->SetBranchAddress("tracks_trueID",        _track_trueID);
       inputTree->SetBranchAddress("tracks_source",        _track_source);
-      
+       inputTree->SetBranchAddress("tracks_charge",       _track_charge);
+
       inputTree->SetBranchAddress("nProjections",         &_nProjections);
       inputTree->SetBranchAddress("track_ProjTrackID",    _track_ProjTrackID);
       inputTree->SetBranchAddress("track_ProjLayer",      _track_ProjLayer);
@@ -235,6 +240,7 @@ void SetBranchAddressesTree(TTree* inputTree){
       inputTree->SetBranchAddress("track_TLP_true_y",      _track_Proj_true_y);
       inputTree->SetBranchAddress("track_TLP_true_z",      _track_Proj_true_z);
       inputTree->SetBranchAddress("track_TLP_true_t",      _track_Proj_true_t);
+      
     }
 
     // towers EEMC

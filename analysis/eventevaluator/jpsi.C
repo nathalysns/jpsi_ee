@@ -5,8 +5,8 @@
 //#include "clusterizer.cxx"
 
 void jpsi(
-	TString inFile            	= "../rootfiles/jpsi_r1.root",
-	TString inFileGeometry      = "../rootfiles/geometry_ideal_CEMCproj_EEMC_LFHCAL_corrected.root",
+	TString inFile            	= "../../../../rootfiles/G4EICDetector_eventtree.root",
+	TString inFileGeometry      = "../../../rootfiles/geometry_ideal_CEMCproj_EEMC_LFHCAL_corrected.root",
 	bool do_reclus              = true,
     unsigned short primaryTrackSource = 0
 
@@ -63,9 +63,7 @@ void jpsi(
 	int trackID[20];
 	
 
-	double Jpsi_track2_M, Jpsi_track3_M1, Jpsi_track3_M2, Jpsi_track3_M3;
-	double Jpsi_track3_eta1, Jpsi_track3_eta2, Jpsi_track3_eta3;
-	double Jpsi_track2_etap1, Jpsi_track2_etap2;
+	double Jpsi_track3_M1, Jpsi_track3_M2, Jpsi_M;
 	double Q2_track3_lepton, xbj_track3_lepton;
 	double Jpsi_track[10];
 
@@ -120,104 +118,31 @@ void jpsi(
 
 	EvTree->Branch("nTracks",&nTracks,"nTracks/I");
     EvTree->Branch("trackID",trackID,"trackID[nTracks]/I");
-	EvTree->Branch("Jpsi_track2_M",&Jpsi_track2_M,"Jpsi_track2_M/D");
-	
-	EvTree->Branch("Jpsi_track2_etap1",&Jpsi_track2_etap1,"Jpsi_track2_etap1/D");
-	EvTree->Branch("Jpsi_track2_etap2",&Jpsi_track2_etap2,"Jpsi_track2_etap2/D");
-
 
 	EvTree->Branch("Jpsi_track3_M1",&Jpsi_track3_M1,"Jpsi_track3_M1/D");
-	EvTree->Branch("Jpsi_track3_M2",&Jpsi_track3_M2,"Jpsi_track3_M2/D");
-	EvTree->Branch("Jpsi_track3_M3",&Jpsi_track3_M3,"Jpsi_track3_M3/D");
+	EvTree->Branch("Jpsi_track3_M2",&Jpsi_track3_M2,"Jpsi_track3_M2/D"); 	
+	EvTree->Branch("Jpsi_M",&Jpsi_M,"Jpsi_M/D");
 
-	EvTree->Branch("Jpsi_track3_M1_etap1",&Jpsi_track3_M1_etap1,"Jpsi_track3_M1_etap1/D");
-	EvTree->Branch("Jpsi_track3_M1_etap2",&Jpsi_track3_M1_etap2,"Jpsi_track3_M1_etap2/D");
-	EvTree->Branch("Jpsi_track3_M1_E1",&Jpsi_track3_M1_E1,"Jpsi_track3_M1_E1/D");
-	EvTree->Branch("Jpsi_track3_M1_E2",&Jpsi_track3_M1_E2,"Jpsi_track3_M1_E2/D");
-
-	EvTree->Branch("Jpsi_track3_M2_etap1",&Jpsi_track3_M2_etap1,"Jpsi_track3_M2_etap1/D");
-	EvTree->Branch("Jpsi_track3_M2_etap2",&Jpsi_track3_M2_etap2,"Jpsi_track3_M2_etap2/D");
-	EvTree->Branch("Jpsi_track3_M3_etap1",&Jpsi_track3_M3_etap1,"Jpsi_track3_M3_etap1/D");
-	EvTree->Branch("Jpsi_track3_M3_etap2",&Jpsi_track3_M3_etap2,"Jpsi_track3_M3_etap2/D");
-	
 	EvTree->Branch("Q2_track3_lepton",&Q2_track3_lepton,"Q2_track3_lepton/D");
 
    
 
 
-	double CEMC_cluster_E_ep, CEMC_cluster_seed_ep, CEMC_cluster_Eta_ep, CEMC_cluster_Phi_ep; 
-	double CEMC_cluster_Z_ep, CEMC_cluster_X_ep, CEMC_cluster_Y_ep, CEMC_cluster_M02_ep;
-	double CEMC_cluster_M20_ep, CEMC_cluster_isMatched_ep, CEMC_cluster_NTowers_ep, CEMC_cluster_trueID_ep;
-	double CEMC_cluster_NtrueID_ep;
-	double CEMC_cluster_E_em, CEMC_cluster_seed_em, CEMC_cluster_Eta_em, CEMC_cluster_Phi_em; 
-	double CEMC_cluster_Z_em, CEMC_cluster_X_em, CEMC_cluster_Y_em, CEMC_cluster_M02_em;
-	double CEMC_cluster_M20_em, CEMC_cluster_isMatched_em, CEMC_cluster_NTowers_em, CEMC_cluster_trueID_em;
-	double CEMC_cluster_NtrueID_em;
-	double CEMC_cluster_E_p, CEMC_cluster_seed_p, CEMC_cluster_Eta_p, CEMC_cluster_Phi_p; 
-	double CEMC_cluster_Z_p, CEMC_cluster_X_p, CEMC_cluster_Y_p, CEMC_cluster_M02_p;
-	double CEMC_cluster_M20_p, CEMC_cluster_isMatched_p, CEMC_cluster_NTowers_p, CEMC_cluster_trueID_p;
-	double CEMC_cluster_NtrueID_p;
-/*
-	if(kCEMC){
-		EvTree->Branch("CEMC_cluster_E_ep",&CEMC_cluster_E_ep,"CEMC_cluster_E_ep/D");
-		EvTree->Branch("CEMC_cluster_seed_ep",&CEMC_cluster_seed_ep,"CEMC_cluster_seed_ep/D");
-		EvTree->Branch("CEMC_cluster_Eta_ep",&CEMC_cluster_Eta_ep,"CEMC_cluster_Eta_ep/D");
-		EvTree->Branch("CEMC_cluster_Phi_ep",&CEMC_cluster_Phi_ep,"CEMC_cluster_Phi_ep/D");
-		EvTree->Branch("CEMC_cluster_Z_ep",&CEMC_cluster_Z_ep,"CEMC_cluster_Z_ep/D");
-		EvTree->Branch("CEMC_cluster_X_ep",&CEMC_cluster_X_ep,"CEMC_cluster_X_ep/D");
-		EvTree->Branch("CEMC_cluster_Y_ep",&CEMC_cluster_Y_ep,"CEMC_cluster_Y_ep/D");
-		EvTree->Branch("CEMC_cluster_M02_ep",&CEMC_cluster_M02_ep,"CEMC_cluster_M02_ep/D");
-		EvTree->Branch("CEMC_cluster_M20_ep",&CEMC_cluster_M20_ep,"CEMC_cluster_M20_ep/D");
-		EvTree->Branch("CEMC_cluster_isMatched_ep",&CEMC_cluster_isMatched_ep,"CEMC_cluster_isMatched_ep/D");
-		EvTree->Branch("CEMC_cluster_NTowers_ep",&CEMC_cluster_NTowers_ep,"CEMC_cluster_NTowers_ep/D");
-		EvTree->Branch("CEMC_cluster_trueID_ep",&CEMC_cluster_trueID_ep,"CEMC_cluster_trueID_ep/D");
-		EvTree->Branch("CEMC_cluster_NtrueID_ep",&CEMC_cluster_NtrueID_ep,"CEMC_cluster_NtrueID_ep/D");
-
-
-		EvTree->Branch("CEMC_cluster_E_em",&CEMC_cluster_E_em,"CEMC_cluster_E_em/D");
-		EvTree->Branch("CEMC_cluster_seed_em",&CEMC_cluster_seed_em,"CEMC_cluster_seed_em/D");
-		EvTree->Branch("CEMC_cluster_Eta_em",&CEMC_cluster_Eta_em,"CEMC_cluster_Eta_em/D");
-		EvTree->Branch("CEMC_cluster_Phi_em",&CEMC_cluster_Phi_em,"CEMC_cluster_Phi_em/D");
-		EvTree->Branch("CEMC_cluster_Z_em",&CEMC_cluster_Z_em,"CEMC_cluster_Z_em/D");
-		EvTree->Branch("CEMC_cluster_X_em",&CEMC_cluster_X_em,"CEMC_cluster_X_em/D");
-		EvTree->Branch("CEMC_cluster_Y_em",&CEMC_cluster_Y_em,"CEMC_cluster_Y_em/D");
-		EvTree->Branch("CEMC_cluster_M02_em",&CEMC_cluster_M02_em,"CEMC_cluster_M02_em/D");
-		EvTree->Branch("CEMC_cluster_M20_em",&CEMC_cluster_M20_em,"CEMC_cluster_M20_em/D");
-		EvTree->Branch("CEMC_cluster_isMatched_em",&CEMC_cluster_isMatched_em,"CEMC_cluster_isMatched_em/D");
-		EvTree->Branch("CEMC_cluster_NTowers_em",&CEMC_cluster_NTowers_em,"CEMC_cluster_NTowers_em/D");
-		EvTree->Branch("CEMC_cluster_trueID_em",&CEMC_cluster_trueID_em,"CEMC_cluster_trueID_em/D");
-		EvTree->Branch("CEMC_cluster_NtrueID_em",&CEMC_cluster_NtrueID_em,"CEMC_cluster_NtrueID_em/D");
-
-		EvTree->Branch("CEMC_cluster_E_p",&CEMC_cluster_E_p,"CEMC_cluster_E_p/D");
-		EvTree->Branch("CEMC_cluster_seed_p",&CEMC_cluster_seed_p,"CEMC_cluster_seed_p/D");
-		EvTree->Branch("CEMC_cluster_Eta_p",&CEMC_cluster_Eta_p,"CEMC_cluster_Eta_p/D");
-		EvTree->Branch("CEMC_cluster_Phi_p",&CEMC_cluster_Phi_p,"CEMC_cluster_Phi_p/D");
-		EvTree->Branch("CEMC_cluster_Z_p",&CEMC_cluster_Z_p,"CEMC_cluster_Z_p/D");
-		EvTree->Branch("CEMC_cluster_X_p",&CEMC_cluster_X_p,"CEMC_cluster_X_p/D");
-		EvTree->Branch("CEMC_cluster_Y_p",&CEMC_cluster_Y_p,"CEMC_cluster_Y_p/D");
-		EvTree->Branch("CEMC_cluster_M02_p",&CEMC_cluster_M02_p,"CEMC_cluster_M02_p/D");
-		EvTree->Branch("CEMC_cluster_M20_p",&CEMC_cluster_M20_p,"CEMC_cluster_M20_p/D");
-		EvTree->Branch("CEMC_cluster_isMatched_p",&CEMC_cluster_isMatched_p,"CEMC_cluster_isMatched_p/D");
-		EvTree->Branch("CEMC_cluster_NTowers_p",&CEMC_cluster_NTowers_p,"CEMC_cluster_NTowers_p/D");
-		EvTree->Branch("CEMC_cluster_trueID_p",&CEMC_cluster_trueID_p,"CEMC_cluster_trueID_p/D");
-		EvTree->Branch("CEMC_cluster_NtrueID_p",&CEMC_cluster_NtrueID_p,"CEMC_cluster_NtrueID_p/D");
-
-	}*/
-
    	_nEventsTree=0;
+
+    int track = 0;
+    int MC_aboveQ2 = 0;
 
     // main event loop
     for (Long64_t i=0; i<nEntriesTree;i++) {
 
-    	Jpsi_track2_M = Jpsi_track3_M1 = Jpsi_track3_M2 = Jpsi_track3_M3 = -100;
-    	Jpsi_track3_eta1  = Jpsi_track3_eta2  = Jpsi_track3_eta3 = -100;
-    	Jpsi_track2_etap1 = Jpsi_track2_etap2 = -100;
+    	Jpsi_track3_M1 = Jpsi_track3_M2 = -100;
     	Q2_track3_lepton  = xbj_track3_lepton = -100;
-    	Jpsi_track3_M1_E1 = Jpsi_track3_M1_E2 = -100;
+    	Jpsi_track3_M1_E1 = Jpsi_track3_M1_E2 = Jpsi_M = -100;
 
     	// load current event
         tt_event->GetEntry(i);
-        if(_nMCPart!=4) continue;
+        //if(_nMCPart!=4) continue;
         //if(_nMCPart!=2) continue;
         TLorentzVector epMC;
         TLorentzVector emMC;
@@ -256,6 +181,8 @@ void jpsi(
         	 	continue;
         	 }
         }
+
+        
 
 
        	TLorentzVector JpsiMC = epMC + emMC;
@@ -329,60 +256,83 @@ void jpsi(
 			 
 		xbjMChadron  = Q2MChadron/(sMChadron*yMChadron);
 
+
+		if (Q2MClepton<1.) continue;
+
 		nTracks = _nTracks;
 		n_mass = 0;
 
 		for (int l = 0; l<nTracks; l++){
 			trackID[l] = _mcpart_BCID[l];
 		}
-		Jpsi_track2_M -100;
-		if(_nTracks == 2){
+		
+		if(_nTracks ==9){
 
-			TVector3 v1(_track_px[0],_track_px[0],_track_pz[0]);
-			TVector3 v2(_track_px[1],_track_px[1],_track_pz[1]);
-			//======= test if are J/Psi
+			TLorentzVector hypep;
 			TLorentzVector hyp1;
 			TLorentzVector hyp2;
+			//======= Read from the tracking paths ==============//
+			int eptrack_N[3];
+			int othercharged[3];
+			int noe = 0;
+			int nep = 0;
 
-			hyp1.SetXYZM(_track_px[0],_track_px[0],_track_pz[0], me);
-			hyp2.SetXYZM(_track_px[1],_track_px[1],_track_pz[1], me);
-			TLorentzVector JPsihyp = hyp1 + hyp2;
+			for(int l=0; l<_nTracks; l++){
 
-			Jpsi_track2_M = JPsihyp.M();
-			Jpsi_track2_etap1 = JPsihyp.Eta();
-			Jpsi_track2_etap2 = JPsihyp.Eta();
-		}
-		else if(_nTracks ==3){
+				if(_track_source[l]!=0) continue;
+				if( _track_charge[l] == short(1)) {
+					eptrack_N[nep] = l;
+					nep++; 
 
-			TLorentzVector hyp1;
-			TLorentzVector hyp2;
-			TLorentzVector hyp3;
+				}
+				else if( _track_charge[l] == short(-1))  {
+					othercharged[noe] = l;
+					noe++;
+				}
+			}
 
-			hyp1.SetXYZM(_track_px[0],_track_px[0],_track_pz[0], me);
-			hyp2.SetXYZM(_track_px[1],_track_px[1],_track_pz[1], me);
-			hyp3.SetXYZM(_track_px[2],_track_px[2],_track_pz[2], me);
+			if(nep>1) continue;
+			if(nep>2) continue;
+			
+			hypep.SetXYZM(_track_px[eptrack_N[0]],_track_py[eptrack_N[0]],_track_pz[eptrack_N[0]], me);
+			hyp1.SetXYZM(_track_px[othercharged[0]],_track_py[othercharged[0]],_track_pz[othercharged[0]], me);
+			hyp2.SetXYZM(_track_px[othercharged[1]],_track_py[othercharged[1]],_track_pz[othercharged[1]], me);
 
-			TLorentzVector JPsihyp1 = hyp1 + hyp2;
-			TLorentzVector JPsihyp2 = hyp1 + hyp3;
-			TLorentzVector JPsihyp3 = hyp2 + hyp3;
-
+			TLorentzVector JPsihyp1 = hypep + hyp1;
+			TLorentzVector JPsihyp2 = hypep + hyp2;
+			TLorentzVector JPsi;
+			TLorentzVector Electron;
 	
 			Jpsi_track3_M1 = JPsihyp1.M();
+			Jpsi_track3_M2 = JPsihyp2.M();
+
+			if(Jpsi_track3_M1 > low_limjpsiM && Jpsi_track3_M1 < high_limjpsiM){
+				JPsi = JPsihyp1;
+				Electron.SetXYZM(_track_px[othercharged[1]],_track_py[othercharged[1]],_track_pz[othercharged[1]], me);
+			} 
+			else if(Jpsi_track3_M2 > low_limjpsiM && Jpsi_track3_M2 < high_limjpsiM){
+				JPsi = JPsihyp2;
+				Electron.SetXYZM(_track_px[othercharged[0]],_track_py[othercharged[0]],_track_pz[othercharged[0]], me);
+			}else{
+				continue;
+			}
+
+			Jpsi_M = JPsi.M();
+
+
+			/*
 			Jpsi_track3_eta1 = JPsihyp1.Eta();
 			Jpsi_track3_M1_etap1 = hyp1.Eta();
 			Jpsi_track3_M1_etap2 = hyp2.Eta();
 			Jpsi_track3_M1_E1    = hyp1.E();
 			Jpsi_track3_M1_E2    = hyp2.E();
 
-			Jpsi_track3_M2 = JPsihyp2.M();
-			Jpsi_track3_eta2 = JPsihyp2.Eta();
+			
 			Jpsi_track3_M2_etap1 = hyp1.Eta();
-			Jpsi_track3_M2_etap2 = hyp3.Eta();
+			*/
 
-			Jpsi_track3_M3 = JPsihyp3.M();
-			Jpsi_track3_M3_etap1 = hyp2.Eta();
-			Jpsi_track3_M3_etap2 = hyp3.Eta();
 
+/*
 			//========== Calculating kinematics
 			TLorentzVector hyp3_HO =  rotate_reco(hyp3);
 			
@@ -396,17 +346,15 @@ void jpsi(
 			double y_track3_lepton   = 1 - ((hyp3_HO.E()*(1-pow(cos(thetael_track3_lepton/2),2)))/(2*init_e.E()));	 
 		    double s_track3_lepton   = sqrt((init_e + init_p)*(init_e + init_p));
 		
-			xbj_track3_lepton = Q2_track3_lepton/(s_track3_lepton*y_track3_lepton);
+			xbj_track3_lepton = Q2_track3_lepton/(s_track3_lepton*y_track3_lepton);*/
 			
-
+			track++;
 	
 
 		}
  
-        	 
-    	
-		if (Q2MClepton<5.) continue;
 
+		MC_aboveQ2++;
 
     	EvTree->Fill();
     	//if (i>10000) break;
@@ -416,6 +364,8 @@ void jpsi(
 
     EvTree->Write();
  	MyFile->Close();
+ 	cout << "number MC " << MC_aboveQ2 << endl;
+ 	cout << "number analyzed " << track << endl;
 	
 }
 
