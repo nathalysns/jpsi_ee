@@ -1,16 +1,18 @@
 
 
 #include "jpsi.h"
+#include "BranchesInfo.h"
 //#include "caloheader.h"
 //#include "clusterizer.cxx"
 
 void jpsi(
-	TString inFile            	= "../../../../rootfiles/G4EICDetector_eventtree.root",
+	TString inFile            	= "jpsi_all.root",
 	TString inFileGeometry      = "../../../rootfiles/geometry_ideal_CEMCproj_EEMC_LFHCAL_corrected.root",
 	bool do_reclus              = true,
     unsigned short primaryTrackSource = 0
 
 ){
+
 
 	// load tree
     TChain *const tt_event = new TChain("event_tree");
@@ -47,134 +49,158 @@ void jpsi(
     TFile *MyFile = new TFile("jpsi_test.root","RECREATE");
 	TTree *EvTree = new TTree( "T", "T" );
 
-	double JpsimassMC, JpsithetaMC, JpsiphiMC, JpsietaMC, JpsipMC, JpsiEMC;
-	double epthetaMC, epphiMC, eppTMC, epetaMC, eppMC, epEMC;
-	double emthetaMC, emphiMC, empTMC, emetaMC, empMC, emEMC;
-	double pthetaMC, pphiMC, ppTMC, petaMC, ppMC, pEMC;
-	double elthetaMC, elphiMC, elpTMC, eletaMC, elpMC, elEMC;
-	double Q2MClepton, xbjMClepton, nuMClepton, thetaelMClepton, yMClepton, sMClepton;
-	double Q2MChadron, xbjMChadron, nuMChadron, thetaelMChadron, yMChadron, sMChadron;
-	double Jpsi_track3_M1_etap1, Jpsi_track3_M1_etap2, Jpsi_track3_M2_etap1, Jpsi_track3_M2_etap2;
-	double Jpsi_track3_M3_etap1, Jpsi_track3_M3_etap2;
-	double Jpsi_track3_M1_E1, Jpsi_track3_M1_E2;
-
 	int nTracks;
 	int n_mass;
 	int trackID[20];
 	
 
 	double Jpsi_track3_M1, Jpsi_track3_M2, Jpsi_M;
-	double Q2_track3_lepton, xbj_track3_lepton;
-	double Jpsi_track[10];
+	double ep_eta, em_eta, p_eta, Jpsi_eta, e_eta;
+	double ep_theta, em_theta, p_theta, Jpsi_theta, e_theta;
+	double ep_phi, em_phi, p_phi, Jpsi_phi, e_phi;
+	double ep_p, em_p, p_p, Jpsi_p, e_p;
+	double ep_pT, em_pT, p_pT, Jpsi_pT, e_pT;
+	double ep_E, em_E, p_E, Jpsi_E, e_E;
 
-	EvTree->Branch("JpsimassMC",&JpsimassMC,"JpsimassMC/D");
-	EvTree->Branch("JpsithetaMC",&JpsithetaMC,"JpsithetaMC/D");
-	EvTree->Branch("JpsiphiMC",&JpsiphiMC,"JpsiphiMC/D");
-	EvTree->Branch("JpsietaMC",&JpsietaMC,"JpsietaMC/D");
-	EvTree->Branch("JpsipMC",&JpsipMC,"JpsipMC/D");
-	EvTree->Branch("JpsiEMC",&JpsiEMC,"JpsiEEMC/D");
-
-	EvTree->Branch("epthetaMC",&epthetaMC,"epthetaMC/D");
-	EvTree->Branch("epphiMC",&epphiMC,"epphiMC/D");
-	EvTree->Branch("epetaMC",&epetaMC,"epetaMC/D");
-	EvTree->Branch("eppTMC",&eppTMC,"eppTMC/D");
-	EvTree->Branch("eppMC",&eppMC,"eppMC/D");
-	EvTree->Branch("epEMC",&epEMC,"epEMC/D");
-
-	EvTree->Branch("emthetaMC",&emthetaMC,"emthetaMC/D");
-	EvTree->Branch("emphiMC",&emphiMC,"emphiMC/D");
-	EvTree->Branch("emetaMC",&emetaMC,"emetaMC/D");
-	EvTree->Branch("empTMC",&empTMC,"empTMC/D");
-	EvTree->Branch("empMC",&empMC,"empMC/D");
-	EvTree->Branch("emEMC",&emEMC,"emEMC/D");
-
-	EvTree->Branch("pthetaMC",&pthetaMC,"pthetaMC/D");
-	EvTree->Branch("pphiMC",  &pphiMC,  "pphiMC/D");
-	EvTree->Branch("petaMC",  &petaMC,  "petaMC/D");
-	EvTree->Branch("ppTMC",   &ppTMC,   "ppTMC/D");
-	EvTree->Branch("ppMC",    &ppMC,    "ppMC/D");
-	EvTree->Branch("pEMC",    &pEMC,    "pEMC/D");
-
-	EvTree->Branch("elthetaMC",&elthetaMC,"elthetaMC/D");
-	EvTree->Branch("elphiMC",  &elphiMC,  "elphiMC/D");
-	EvTree->Branch("eletaMC",  &eletaMC,  "eletaMC/D");
-	EvTree->Branch("elpTMC",   &elpTMC,   "elpTMC/D");
-	EvTree->Branch("elpMC",    &elpMC,    "elpMC/D");
-	EvTree->Branch("elEMC",    &elEMC,    "elEMC/D");
-
-	EvTree->Branch("Q2MClepton",&Q2MClepton,"Q2MClepton/D");
-	EvTree->Branch("xbjMClepton",&xbjMClepton,"xbjMClepton/D");
-	EvTree->Branch("nuMClepton",&nuMClepton,"nuMClepton/D");
-	EvTree->Branch("thetaelMClepton",&thetaelMClepton,"thetaelMClepton/D");
-	EvTree->Branch("yMClepton",&yMClepton,"yMClepton/D");
-	EvTree->Branch("sMClepton",&sMClepton,"sMClepton/D");
-
-	EvTree->Branch("Q2MChadron",&Q2MChadron,"Q2MChadron/D");
-	EvTree->Branch("xbjMChadron",&xbjMChadron,"xbjMChadron/D");
-	EvTree->Branch("nuMChadron",&nuMChadron,"nuMChadron/D");
-	EvTree->Branch("thetaelMChadron",&thetaelMChadron,"thetaelMChadron/D");
-	EvTree->Branch("yMChadron",&yMChadron,"yMChadron/D");
-	EvTree->Branch("sMChadron",&sMChadron,"sMChadron/D");
-
-	EvTree->Branch("nTracks",&nTracks,"nTracks/I");
-    EvTree->Branch("trackID",trackID,"trackID[nTracks]/I");
+	double Q2, xbj, Q2MC, xbjMC;
 
 	EvTree->Branch("Jpsi_track3_M1",&Jpsi_track3_M1,"Jpsi_track3_M1/D");
 	EvTree->Branch("Jpsi_track3_M2",&Jpsi_track3_M2,"Jpsi_track3_M2/D"); 	
 	EvTree->Branch("Jpsi_M",&Jpsi_M,"Jpsi_M/D");
 
-	EvTree->Branch("Q2_track3_lepton",&Q2_track3_lepton,"Q2_track3_lepton/D");
+	EvTree->Branch("ep_eta",&ep_eta,"ep_eta/D");
+	EvTree->Branch("ep_theta",&ep_theta,"ep_theta/D"); 	
+	EvTree->Branch("ep_phi",&ep_phi,"ep_phi/D");
+	EvTree->Branch("ep_p",&ep_p,"ep_p/D");
+	EvTree->Branch("ep_pT",&ep_pT,"ep_pT/D");
+	EvTree->Branch("ep_E",&ep_E,"ep_E/D");
+	EvTree->Branch("em_eta",&em_eta,"em_eta/D");
+	EvTree->Branch("em_theta",&em_theta,"em_theta/D"); 	
+	EvTree->Branch("em_phi",&em_phi,"em_phi/D");
+	EvTree->Branch("em_p",&em_p,"em_p/D");
+	EvTree->Branch("em_pT",&em_pT,"em_pT/D");
+	EvTree->Branch("em_E",&em_E,"em_E/D");
+	EvTree->Branch("p_eta",&p_eta,"p_eta/D");
+	EvTree->Branch("p_theta",&p_theta,"p_theta/D"); 	
+	EvTree->Branch("p_phi",&p_phi,"p_phi/D");
+	EvTree->Branch("p_p",&p_p,"p_p/D");
+	EvTree->Branch("p_pT",&p_pT,"p_pT/D");
+	EvTree->Branch("p_E",&p_E,"p_E/D");
+	EvTree->Branch("Jpsi_eta",&Jpsi_eta,"Jpsi_eta/D");
+	EvTree->Branch("Jpsi_theta",&Jpsi_theta,"Jpsi_theta/D"); 	
+	EvTree->Branch("Jpsi_phi",&Jpsi_phi,"Jpsi_phi/D");
+	EvTree->Branch("Jpsi_p",&Jpsi_p,"Jpsi_p/D");
+	EvTree->Branch("Jpsi_pT",&Jpsi_pT,"Jpsi_pT/D");
+	EvTree->Branch("Jpsi_E",&Jpsi_E,"Jpsi_E/D");
+	EvTree->Branch("e_eta",&e_eta,"e_eta/D");
+	EvTree->Branch("e_theta",&e_theta,"e_theta/D"); 	
+	EvTree->Branch("e_phi",&e_phi,"e_phi/D");
+	EvTree->Branch("e_p",&e_p,"e_p/D");
+	EvTree->Branch("e_pT",&e_pT,"e_pT/D");
+	EvTree->Branch("e_E",&e_E,"e_E/D");
+	
+	EvTree->Branch("Q2",&Q2,"Q2/D");
+	EvTree->Branch("xbj",&xbj,"xbj/D");
+	EvTree->Branch("Q2MC",&Q2MC,"Q2MC/D");
+	EvTree->Branch("xbjMC",&xbjMC,"xbjMC/D");
 
    
+	if(HepmcEnabled){
+    		AddBranchesHepmc(EvTree);
+    		cout << "test" << endl;
+	}
 
+	AddBranchesMC(EvTree);
 
    	_nEventsTree=0;
 
     int track = 0;
     int MC_aboveQ2 = 0;
 
+    TLorentzVector ProtonBeam(0,0,274.998,275);
+    TLorentzVector ElectronBeam(0,0,-18,18);
+    TLorentzRotation rotlor = TLorentzRotation().RotateY(12.5e-3).Boost(sin(12.5e-3),0,0);
+
     // main event loop
-    for (Long64_t i=0; i<nEntriesTree;i++) {
+    for (Long64_t i=0; i<nEntriesTree;i++) {  
 
-    	Jpsi_track3_M1 = Jpsi_track3_M2 = -100;
-    	Q2_track3_lepton  = xbj_track3_lepton = -100;
-    	Jpsi_track3_M1_E1 = Jpsi_track3_M1_E2 = Jpsi_M = -100;
+    	tt_event->GetEntry(i);
+    	
+    	if (_hepmcp_Q2 < 1.) continue;
+    
+    	TLorentzVector JpsiHepmc;
+    	TLorentzVector eeHepmc;
+    	TLorentzVector emHepmc;
+    	TLorentzVector epHepmc;
+    	TLorentzVector pHepmc;
 
+    	for(int j = 0; j < _nHepmcp; j++){
+    		if (_hepmcp_BCID[j] == 10006){
+    			JpsiHepmc.SetPxPyPzE(_hepmcp_px[j],_hepmcp_py[j],_hepmcp_pz[j],_hepmcp_E[j]);
+	    		Jpsi_mass_Hepmc = JpsiHepmc.M(); Jpsi_theta_Hepmc = JpsiHepmc.Theta();
+	    		Jpsi_phi_Hepmc = JpsiHepmc.Phi(); Jpsi_eta_Hepmc  = JpsiHepmc.Eta(); 
+	    		Jpsi_p_Hepmc = JpsiHepmc.Vect().Mag(); Jpsi_pT_Hepmc = JpsiHepmc.Pt();
+	    		Jpsi_E_Hepmc = JpsiHepmc.E();
+    		}
+    		else if(_hepmcp_BCID[j] == 10002){
+    			eeHepmc.SetPxPyPzE(_hepmcp_px[j],_hepmcp_py[j],_hepmcp_pz[j],_hepmcp_E[j]);
+	    		e_theta_Hepmc = eeHepmc.Theta();
+	    		e_phi_Hepmc = eeHepmc.Phi(); e_eta_Hepmc  = eeHepmc.Eta(); 
+	    		e_p_Hepmc = eeHepmc.Vect().Mag(); e_pT_Hepmc = eeHepmc.Pt();
+	    		e_E_Hepmc = eeHepmc.E();
+    		}else if(_hepmcp_BCID[j] == 10009){
+    			emHepmc.SetPxPyPzE(_hepmcp_px[j],_hepmcp_py[j],_hepmcp_pz[j],_hepmcp_E[j]);
+	    		em_theta_Hepmc = emHepmc.Theta();
+	    		em_phi_Hepmc = emHepmc.Phi(); em_eta_Hepmc  = emHepmc.Eta(); 
+	    		em_p_Hepmc = emHepmc.Vect().Mag(); em_pT_Hepmc = emHepmc.Pt();
+	    		em_E_Hepmc = emHepmc.E();
+    		}else if(_hepmcp_BCID[j] == 10008){
+    			epHepmc.SetPxPyPzE(_hepmcp_px[j],_hepmcp_py[j],_hepmcp_pz[j],_hepmcp_E[j]);
+	    		ep_theta_Hepmc = epHepmc.Theta();
+	    		ep_phi_Hepmc = epHepmc.Phi(); ep_eta_Hepmc  = epHepmc.Eta(); 
+	    		ep_p_Hepmc = epHepmc.Vect().Mag(); ep_pT_Hepmc = epHepmc.Pt();
+	    		ep_E_Hepmc = epHepmc.E();
+    		}else if(_hepmcp_BCID[j] == 10007){
+    			pHepmc.SetPxPyPzE(_hepmcp_px[j],_hepmcp_py[j],_hepmcp_pz[j],_hepmcp_E[j]);
+	    		p_theta_Hepmc = pHepmc.Theta();
+	    		p_phi_Hepmc = pHepmc.Phi(); p_eta_Hepmc  = pHepmc.Eta(); 
+	    		p_p_Hepmc = pHepmc.Vect().Mag(); p_pT_Hepmc = pHepmc.Pt();
+	    		p_E_Hepmc = pHepmc.E();
+    		}else continue;
+    	}
+
+    	
     	// load current event
-        tt_event->GetEntry(i);
-        //if(_nMCPart!=4) continue;
-        //if(_nMCPart!=2) continue;
-        TLorentzVector epMC;
-        TLorentzVector emMC;
-        TLorentzVector pMC;
-        TLorentzVector eMC;
+        TLorentzVector epMC_det;
+        TLorentzVector emMC_det;
+        TLorentzVector pMC_det;
+        TLorentzVector eMC_det;
 
         for(int imc=0; imc<_nMCPart; imc++){
-        //if (_mcpart_PDG[imc] == -11){
         	 //===== J/Psi True
         	 if(_mcpart_PDG[imc] == 11 && _mcpart_BCID[imc]==10009)  {
-        	 	epMC[0] = _mcpart_px[imc];
-        	 	epMC[1]	= _mcpart_py[imc];
-        	 	epMC[2]	= _mcpart_pz[imc];
-        	 	epMC[3]	= _mcpart_E[imc];
+        	 	epMC_det[0] = _mcpart_px[imc];
+        	 	epMC_det[1]	= _mcpart_py[imc];
+        	 	epMC_det[2]	= _mcpart_pz[imc];
+        	 	epMC_det[3]	= _mcpart_E[imc];
         	 }
         	 else if(_mcpart_PDG[imc] == -11 && _mcpart_BCID[imc]==10008)  {
-        	 	emMC[0] = _mcpart_px[imc];
-        	 	emMC[1]	= _mcpart_py[imc];
-        	 	emMC[2]	= _mcpart_pz[imc];
-        	 	emMC[3]	= _mcpart_E[imc];
+        	 	emMC_det[0] = _mcpart_px[imc];
+        	 	emMC_det[1]	= _mcpart_py[imc];
+        	 	emMC_det[2]	= _mcpart_pz[imc];
+        	 	emMC_det[3]	= _mcpart_E[imc];
         	 }
         	 else if(_mcpart_PDG[imc] == 2212 && _mcpart_BCID[imc]==10007)  {
-        	 	pMC[0] = _mcpart_px[imc];
-        	 	pMC[1]	= _mcpart_py[imc];
-        	 	pMC[2]	= _mcpart_pz[imc];
-        	 	pMC[3]	= _mcpart_E[imc];
+        	 	pMC_det[0] = _mcpart_px[imc];
+        	 	pMC_det[1]	= _mcpart_py[imc];
+        	 	pMC_det[2]	= _mcpart_pz[imc];
+        	 	pMC_det[3]	= _mcpart_E[imc];
         	 }
         	 else if(_mcpart_PDG[imc] == 11 && _mcpart_BCID[imc]==10002)  {
-        	 	eMC[0] = _mcpart_px[imc];
-        	 	eMC[1]	= _mcpart_py[imc];
-        	 	eMC[2]	= _mcpart_pz[imc];
-        	 	eMC[3]	= _mcpart_E[imc];
+        	 	eMC_det[0] = _mcpart_px[imc];
+        	 	eMC_det[1]	= _mcpart_py[imc];
+        	 	eMC_det[2]	= _mcpart_pz[imc];
+        	 	eMC_det[3]	= _mcpart_E[imc];
         	 }
         	 else
         	 {
@@ -182,103 +208,73 @@ void jpsi(
         	 }
         }
 
-        
+        TLorentzVector JpsiMC_det 	= 	epMC_det + emMC_det;
+/*
+        TLorentzVector pMC        	=  	rotlor*pMC_det;  	
+       	TLorentzVector JpsiMC 		= 	rotlor*JpsiMC_det;
+       	TLorentzVector eMC    		=	rotlor*eMC_det;
+       	TLorentzVector epMC    		=	rotlor*epMC_det;
+       	TLorentzVector emMC    		=	rotlor*emMC_det;
+*/
+        TLorentzVector pMC        	=  	pMC_det;  	
+       	TLorentzVector JpsiMC 		= 	JpsiMC_det;
+       	TLorentzVector eMC    		=	eMC_det;
+       	TLorentzVector epMC    		=	epMC_det;
+       	TLorentzVector emMC    		=	emMC_det;
 
-
-       	TLorentzVector JpsiMC = epMC + emMC;
-        JpsimassMC  = JpsiMC.M();
-      	JpsithetaMC = JpsiMC.Theta()*180/TMath::Pi();
-      	JpsiphiMC   = JpsiMC.Phi()*180/TMath::Pi();
-        JpsietaMC   = -TMath::Log(TMath::Tan(JpsiMC.Theta()/2));
-        JpsipMC 	=  JpsiMC.Vect().Mag();
-        JpsiEMC     =  JpsiMC.E();
+        Jpsi_mass_MC  = JpsiMC.M();
+      	Jpsi_theta_MC = JpsiMC.Theta()*180/TMath::Pi();
+      	Jpsi_phi_MC   = JpsiMC.Phi()*180/TMath::Pi();
+        Jpsi_eta_MC   = JpsiMC.Eta();
+        Jpsi_p_MC 	  = JpsiMC.Vect().Mag();
+        ep_pT_MC	  = JpsiMC.Perp();
+        Jpsi_E_MC     = JpsiMC.E();
         //====== ep
-        epphiMC     = epMC.Phi()*180/TMath::Pi();
-      	epthetaMC   = epMC.Theta()*180/TMath::Pi();
-        epetaMC 	= -TMath::Log(TMath::Tan(epMC.Theta()/2));
-        eppTMC		= epMC.Perp();
-        eppMC       = epMC.Vect().Mag();
-        epEMC       = epMC.E();
+        ep_phi_MC     = epMC.Phi()*180/TMath::Pi();
+      	ep_theta_MC   = epMC.Theta()*180/TMath::Pi();
+        ep_eta_MC 	  = epMC.Eta();
+        ep_pT_MC	  = epMC.Perp();
+        ep_p_MC       = epMC.Vect().Mag();
+        ep_E_MC       = epMC.E();
 
         //====== em
-       	emphiMC     = emMC.Phi()*180/TMath::Pi();
-      	emthetaMC   = emMC.Theta()*180/TMath::Pi();
-      	emetaMC 	 = -TMath::Log(TMath::Tan(emMC.Theta()/2));
-        empTMC		 = emMC.Perp();
-        empMC       = emMC.Vect().Mag();
-        emEMC       = emMC.E();
+       	em_phi_MC     = emMC.Phi()*180/TMath::Pi();
+      	em_theta_MC   = emMC.Theta()*180/TMath::Pi();
+      	em_eta_MC 	  = -TMath::Log(TMath::Tan(emMC.Theta()/2));
+        em_pT_MC	  = emMC.Perp();
+        em_p_MC       = emMC.Vect().Mag();
+        em_E_MC       = emMC.E();
 
         //====== p
-        pphiMC     = pMC.Phi()*180/TMath::Pi();
-        pthetaMC   = pMC.Theta()*180/TMath::Pi();
-        petaMC 	= -TMath::Log(TMath::Tan(pMC.Theta()/2));
-        ppTMC		= pMC.Perp();
-        ppMC       = pMC.Vect().Mag();
-        pEMC       = pMC.E();
+        p_phi_MC     =  pMC.Phi()*180/TMath::Pi();
+        p_theta_MC   =  pMC.Theta()*180/TMath::Pi();
+        p_eta_MC 	 =  pMC.Eta();
+        p_pT_MC		 =  pMC.Perp();
+        p_p_MC       =  pMC.Vect().Mag();
+        p_E_MC       =  pMC.E();
 
         //====== e
-      	elphiMC     = eMC.Phi()*180/TMath::Pi();
-      	elthetaMC   = eMC.Theta()*180/TMath::Pi();
-      	eletaMC 	= -TMath::Log(TMath::Tan(eMC.Theta()/2));
-      	elpTMC		=  eMC.Perp();
-      	elpMC       = eMC.Vect().Mag();
-        elEMC       = eMC.E();
-
-        //============Rotating to the head on collisions
-        TLorentzVector JpsiMC_HO = rotate_reco(JpsiMC); 
-        TLorentzVector pMC_HO = rotate_reco(pMC);
-        TLorentzVector eMC_HO = rotate_reco(eMC);
-
-        TLorentzVector init_e(0,0,-elect_energy,elect_energy);
-		TLorentzVector init_p(0,0,proton_energy,proton_energy);        	 
-
-		//============ Kinematic Variables
-		//============ Only Lepton Information
-		nuMClepton        = init_e.E() - eMC_HO.E();
-		thetaelMClepton   = init_e.Vect().Angle(eMC_HO.Vect());
-		Q2MClepton  = -(init_e-eMC_HO)*(init_e-eMC_HO);
-		//xbjMClepton = Q2MClepton/(2*init_e*(init_e-eMC_HO));
-		yMClepton   = 1 - ((eMC_HO.E()*(1-pow(cos(thetaelMClepton/2),2)))/(2*init_e.E()));	 
-		sMClepton   = sqrt((init_e + init_p)*(init_e + init_p));
-		xbjMClepton = Q2MClepton/(sMClepton*yMClepton);
+      	e_phi_MC     =  eMC.Phi()*180/TMath::Pi();
+      	e_theta_MC   =  eMC.Theta()*180/TMath::Pi();
+      	e_eta_MC  	 =  eMC.Eta();
+      	e_pT_MC	  	 =  eMC.Perp();
+      	e_p_MC       =  eMC.Vect().Mag();
+        e_E_MC       =  eMC.E();
 
 
-		//============ JB method
-		Double_t num = (JpsiMC_HO.E() - JpsiMC_HO.Pz()) + (pMC_HO.E() - pMC_HO.Pz()) + (init_p.E() - init_p.Pz());
+		TLorentzVector hypep;
+		TLorentzVector hyp1;
+		TLorentzVector hyp2;
 
-		yMChadron 	  = num/(2*init_e.E());
-			 
-		TLorentzVector PT  = JpsiMC_HO + pMC_HO + init_p;
-
-		Q2MChadron   = PT.Perp()/(1-yMChadron);
-			 
-		sMChadron    = sqrt((JpsiMC_HO + pMC_HO + eMC_HO)*(JpsiMC_HO + pMC_HO + eMC_HO));
-			 
-		xbjMChadron  = Q2MChadron/(sMChadron*yMChadron);
-
-
-		if (Q2MClepton<1.) continue;
-
-		nTracks = _nTracks;
-		n_mass = 0;
-
-		for (int l = 0; l<nTracks; l++){
-			trackID[l] = _mcpart_BCID[l];
-		}
+		int eptrack_N[3];
+		int othercharged[3];
+		int noe = 0;
+		int nep = 0;
 		
 		if(_nTracks ==9){
-
-			TLorentzVector hypep;
-			TLorentzVector hyp1;
-			TLorentzVector hyp2;
+	
 			//======= Read from the tracking paths ==============//
-			int eptrack_N[3];
-			int othercharged[3];
-			int noe = 0;
-			int nep = 0;
-
 			for(int l=0; l<_nTracks; l++){
-
 				if(_track_source[l]!=0) continue;
 				if( _track_charge[l] == short(1)) {
 					eptrack_N[nep] = l;
@@ -290,73 +286,66 @@ void jpsi(
 					noe++;
 				}
 			}
-
-			if(nep>1) continue;
-			if(nep>2) continue;
-			
-			hypep.SetXYZM(_track_px[eptrack_N[0]],_track_py[eptrack_N[0]],_track_pz[eptrack_N[0]], me);
-			hyp1.SetXYZM(_track_px[othercharged[0]],_track_py[othercharged[0]],_track_pz[othercharged[0]], me);
-			hyp2.SetXYZM(_track_px[othercharged[1]],_track_py[othercharged[1]],_track_pz[othercharged[1]], me);
-
-			TLorentzVector JPsihyp1 = hypep + hyp1;
-			TLorentzVector JPsihyp2 = hypep + hyp2;
-			TLorentzVector JPsi;
-			TLorentzVector Electron;
-	
-			Jpsi_track3_M1 = JPsihyp1.M();
-			Jpsi_track3_M2 = JPsihyp2.M();
-
-			if(Jpsi_track3_M1 > low_limjpsiM && Jpsi_track3_M1 < high_limjpsiM){
-				JPsi = JPsihyp1;
-				Electron.SetXYZM(_track_px[othercharged[1]],_track_py[othercharged[1]],_track_pz[othercharged[1]], me);
-			} 
-			else if(Jpsi_track3_M2 > low_limjpsiM && Jpsi_track3_M2 < high_limjpsiM){
-				JPsi = JPsihyp2;
-				Electron.SetXYZM(_track_px[othercharged[0]],_track_py[othercharged[0]],_track_pz[othercharged[0]], me);
-			}else{
-				continue;
-			}
-
-			Jpsi_M = JPsi.M();
-
-
-			/*
-			Jpsi_track3_eta1 = JPsihyp1.Eta();
-			Jpsi_track3_M1_etap1 = hyp1.Eta();
-			Jpsi_track3_M1_etap2 = hyp2.Eta();
-			Jpsi_track3_M1_E1    = hyp1.E();
-			Jpsi_track3_M1_E2    = hyp2.E();
-
-			
-			Jpsi_track3_M2_etap1 = hyp1.Eta();
-			*/
-
-
-/*
-			//========== Calculating kinematics
-			TLorentzVector hyp3_HO =  rotate_reco(hyp3);
-			
-			Q2_track3_lepton  = -(init_e-hyp3_HO)*(init_e-hyp3_HO);
-			//xbj_track3_lepton = Q2MClepton/(2*init_e*(init_e-hyp3_HO));
-
-			nuMClepton        = init_e.E() - eMC_HO.E();
-			
-			double thetael_track3_lepton   = init_e.Vect().Angle(hyp3_HO.Vect());
-		
-			double y_track3_lepton   = 1 - ((hyp3_HO.E()*(1-pow(cos(thetael_track3_lepton/2),2)))/(2*init_e.E()));	 
-		    double s_track3_lepton   = sqrt((init_e + init_p)*(init_e + init_p));
-		
-			xbj_track3_lepton = Q2_track3_lepton/(s_track3_lepton*y_track3_lepton);*/
-			
-			track++;
-	
-
 		}
- 
 
-		MC_aboveQ2++;
+		if(nep>1) continue;
+		if(nep>2) continue;
+			
+		hypep.SetXYZM(_track_px[eptrack_N[0]],_track_py[eptrack_N[0]],_track_pz[eptrack_N[0]], me);
+		hyp1.SetXYZM(_track_px[othercharged[0]],_track_py[othercharged[0]],_track_pz[othercharged[0]], me);
+		hyp2.SetXYZM(_track_px[othercharged[1]],_track_py[othercharged[1]],_track_pz[othercharged[1]], me);
 
-    	EvTree->Fill();
+		TLorentzVector JPsihyp1 = hypep + hyp1;
+		TLorentzVector JPsihyp2 = hypep + hyp2;
+		
+		TLorentzVector JPsi;
+		TLorentzVector Electron;
+		TLorentzVector ep;
+		TLorentzVector em;
+	
+		ep = hypep;
+		Jpsi_track3_M1 = JPsihyp1.M();
+		Jpsi_track3_M2 = JPsihyp2.M();
+
+		if(Jpsi_track3_M1 > low_limjpsiM && Jpsi_track3_M1 < high_limjpsiM){
+			JPsi = JPsihyp1;
+			Electron.SetXYZM(_track_px[othercharged[1]],_track_py[othercharged[1]],_track_pz[othercharged[1]], me);
+			em = hyp1;
+		} else if(Jpsi_track3_M2 > low_limjpsiM && Jpsi_track3_M2 < high_limjpsiM){
+			JPsi = JPsihyp2;
+			Electron.SetXYZM(_track_px[othercharged[0]],_track_py[othercharged[0]],_track_pz[othercharged[0]], me);
+			em = hyp2;
+		}else{
+			continue;
+		}
+
+
+		Jpsi_M = JPsi.M();
+		ep_eta = hypep.Eta(); em_eta = em.Eta(); Jpsi_eta = JPsi.Eta(); e_eta = Electron.Eta();
+		ep_theta = hypep.Theta(); em_theta = em.Theta(); Jpsi_theta = JPsi.Theta(); e_theta = Electron.Theta();
+		ep_phi = hypep.Phi(); em_phi = em.Phi(); Jpsi_phi = JPsi.Phi(); e_phi = Electron.Phi();
+		ep_p = hypep.Vect().Mag(); em_p = em.Vect().Mag(); Jpsi_p = JPsi.Vect().Mag(); e_p = Electron.Vect().Mag();
+		ep_pT = hypep.Perp(); em_pT = em.Perp(); Jpsi_pT = JPsi.Perp(); e_pT = Electron.Perp();
+		ep_E = hypep.E(); em_E = em.E(); Jpsi_E = JPsi.E(); e_E = Electron.E();
+
+		//==== Kinematics from tracking ==========
+
+	   	
+    	TLorentzVector eMC_HO = rotate_reco(eMC,25.e-3);
+    	TLorentzVector Electron_HO = rotate_reco(Electron,25.e-3);
+
+		Q2MC = -(ElectronBeam - eMC_HO)*(ElectronBeam - eMC_HO);
+		Q2   = -(ElectronBeam - Electron_HO)*(ElectronBeam - Electron_HO);
+
+		xbjMC = Q2MC/(2*ProtonBeam*(ElectronBeam - eMC_HO));
+		xbj   = Q2/(2*ProtonBeam*(ElectronBeam - Electron_HO));
+
+
+		track++;
+	
+
+
+	  	EvTree->Fill();
     	//if (i>10000) break;
 
 

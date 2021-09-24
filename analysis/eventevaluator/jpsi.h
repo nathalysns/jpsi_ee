@@ -44,6 +44,7 @@ bool caloEnabled[20]      = {0};
 bool tracksEnabled        = 0;
 bool vertexEnabled        = 0;
 bool xSectionEnabled      = 0;
+bool HepmcEnabled      = 0;
 
 // Event level info
 float _cross_section;
@@ -201,6 +202,21 @@ float* _clusters_BECAL_Eta         = new float[_maxNclusters];
 float* _clusters_BECAL_Phi         = new float[_maxNclusters];
 int* _clusters_BECAL_NTower         = new int[_maxNclusters];
 int* _clusters_BECAL_trueID       = new int[_maxNclusters];
+
+int _nHepmcp; 
+int _hepmcp_procid; 
+float _hepmcp_x1; 
+float _hepmcp_x2;
+float _hepmcp_Q2;
+int* _hepmcp_status            = new int[_maxNHepmcp];
+int* _hepmcp_PDG               = new int[_maxNHepmcp];
+float* _hepmcp_E               = new float[_maxNHepmcp]; 
+float* _hepmcp_px              = new float[_maxNHepmcp]; 
+float* _hepmcp_py              = new float[_maxNHepmcp];  
+float* _hepmcp_pz              = new float[_maxNHepmcp];
+int* _hepmcp_BCID              = new int[_maxNHepmcp]; 
+int* _hepmcp_m1                = new int[_maxNHepmcp];
+int* _hepmcp_m2                = new int[_maxNHepmcp]; 
 
 void SetBranchAddressesTree(TTree* inputTree){
 
@@ -388,6 +404,26 @@ void SetBranchAddressesTree(TTree* inputTree){
     inputTree->SetBranchAddress("mcpart_py",     _mcpart_py);
     inputTree->SetBranchAddress("mcpart_pz",     _mcpart_pz);
     inputTree->SetBranchAddress("mcpart_BCID",     _mcpart_BCID);
+
+    if (inputTree->GetBranchStatus("nHepmcp") ){
+      HepmcEnabled = 1;
+
+      inputTree->SetBranchAddress("nHepmcp",      &_nHepmcp);
+      inputTree->SetBranchAddress("hepmcp_procid",      &_hepmcp_procid);
+      inputTree->SetBranchAddress("hepmcp_x1",          &_hepmcp_x1);
+      inputTree->SetBranchAddress("hepmcp_x2",          &_hepmcp_x2);
+      inputTree->SetBranchAddress("hepmcp_Q2",          &_hepmcp_Q2);
+      inputTree->SetBranchAddress("hepmcp_status",      _hepmcp_status);
+      inputTree->SetBranchAddress("hepmcp_PDG",         _hepmcp_PDG);
+      inputTree->SetBranchAddress("hepmcp_E",           _hepmcp_E);
+      inputTree->SetBranchAddress("hepmcp_px",          _hepmcp_px);
+      inputTree->SetBranchAddress("hepmcp_py",          _hepmcp_py);
+      inputTree->SetBranchAddress("hepmcp_pz",          _hepmcp_pz);
+      inputTree->SetBranchAddress("hepmcp_BCID",        _hepmcp_BCID);
+      inputTree->SetBranchAddress("hepmcp_m1",          _hepmcp_m1);
+      inputTree->SetBranchAddress("hepmcp_m2",          _hepmcp_m2);
+
+    }
 }
 
 TRandom3  _fRandom;                                  // random for effi generation
@@ -426,9 +462,9 @@ int GetCorrectMCArrayEntry(float objectTrueID){
   return -1;
 }
 
-TLorentzVector rotate_reco(TLorentzVector init){
+TLorentzVector rotate_reco(TLorentzVector init, double angle ){
   TLorentzVector rotat;
-  TLorentzRotation l = TLorentzRotation().RotateY(12.5e-3).Boost( sin(12.5e-3),0,0);
+  TLorentzRotation l = TLorentzRotation().RotateY(angle/2).Boost(sin(angle/2),0,0);
   rotat = l*init;
   return rotat;
 }
